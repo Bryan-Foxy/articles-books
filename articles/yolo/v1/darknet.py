@@ -64,9 +64,6 @@ class YOLOv1(torch.nn.Module):
             torch.nn.LeakyReLU(0.1),
             torch.nn.Linear(496, S * S * (C + B * 5)),
             )
-
-
-
     
     def forward(self, x):
         x = self.darknet(x)
@@ -80,9 +77,9 @@ if __name__ == "__main__":
     with open('darknet_architecture.txt', 'w') as f:
         print(model, file = f)
 
-    sample_input = torch.randn((2, 3, 448, 448)).to(device)  # Batch size 1, 3 channels (RGB), 224x224 image
+    sample_input = torch.randn((2, 3, 448, 448)).to(device)
     output = model(sample_input)
-    print(output.shape)  # Expected output shape: (1, 1000)
+    print(output.shape)
 
 
 

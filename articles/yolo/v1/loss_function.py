@@ -1,5 +1,5 @@
 import torch
-from ...functions import iou
+from articles.functions import iou
 
 class LossFunctionYOLO(torch.nn.Module):
     def __init__(self, S, B, C, lambda_noobject = 0.5, lambda_coord = 5):
