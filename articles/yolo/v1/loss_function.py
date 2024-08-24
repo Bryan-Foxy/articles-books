@@ -1,5 +1,5 @@
 import torch
-from articles.functions import iou
+from articles.functions.iou import iou
 
 class LossFunctionYOLO(torch.nn.Module):
     def __init__(self, S, B, C, lambda_noobject = 0.5, lambda_coord = 5):
@@ -37,7 +37,7 @@ class LossFunctionYOLO(torch.nn.Module):
         no_obj_loss += self.mse(torch.flatten((1 - box_) * predictions[..., 25:26], start_dim = 1), torch.flatten((1 - box_) * target[..., 20:21], start_dim = 1))
 
         # Class Loss
-        class_loss = self.mse(torch.flatten(box_ *predictions[..., :20], end_dim = -2), torch.flatten(box_ * target[..., :20], start_dim = -2))
+        class_loss = self.mse(torch.flatten(box_ * predictions[..., :20], end_dim = -2,), torch.flatten(box_ * target[..., :20], end_dim = -2,))
 
         final_loss = ((self.lambda_coord * box_loss) + obj_loss + (self.lambda_noobject * no_obj_loss) + class_loss)
         return final_loss

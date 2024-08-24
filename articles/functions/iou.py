@@ -1,6 +1,6 @@
 import torch
 
-def intersection_over_union(boxes_preds, boxes_labels, box_format='midpoint'):
+def iou(boxes_preds, boxes_labels, box_format='midpoint'):
     """
     Calculates intersection over union
     

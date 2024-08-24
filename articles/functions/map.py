@@ -1,8 +1,8 @@
-import iou
 import torch
+from .iou import iou
 from collections import Counter
 
-def mean_average_precision(pred_boxes, true_boxes, iou_threshold=0.5, box_format="midpoint", num_classes=20):
+def map(pred_boxes, true_boxes, iou_threshold=0.5, box_format="midpoint", num_classes=20):
     """
     Calculates mean average precision 
     Parameters:

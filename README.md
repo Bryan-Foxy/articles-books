@@ -9,7 +9,7 @@ This repository is made available to share my implementations of scientific arti
 - **Saliency** 
 - **Grad-CAM** by Ramprasaath R. Selvaraju, Abhinav Das, Ramakrishna Vedantam, Devi Parikh, Dhruv Batra
 - **LeNet** by Yann LeCun, Léon Bottou, Yoshua Bengio, Patrick Haffner
-- **YOLO** (work in progress)
+- **YOLO** by Joseph Redmon, Santosh Divvala, Ross Girshick, Ali Farhadi
 - **Autoencoders and VAEs** (done, will be added soon)
 
 ## Books

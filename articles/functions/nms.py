@@ -1,7 +1,6 @@
-import iou
 import torch
-
-def non_max_suppression(bboxes, iou_threshold, threshold, box_format="corners"):
+from .iou import iou
+def nms(bboxes, iou_threshold, threshold, box_format="corners"):
     """
     Does Non Max Suppression given bboxes
     Parameters:

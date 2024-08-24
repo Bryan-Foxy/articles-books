@@ -2,7 +2,7 @@ import torch
 import numpy as np 
 import matplotlib.pyplot as plt 
 import matplotlib.patches as patches
-from articles.functions import nms
+from articles.functions.nms import nms
 
 if torch.cuda.is_available():
     device = "cuda"
@@ -48,9 +48,9 @@ def get_bboxes(
     model,
     iou_threshold,
     threshold,
-    pred_format="cells",
-    box_format="midpoint",
-    device="cuda",
+    pred_format = "cells",
+    box_format = "midpoint",
+    device = device,
 ):
     all_pred_boxes = []
     all_true_boxes = []
