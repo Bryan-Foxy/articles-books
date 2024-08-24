@@ -74,7 +74,7 @@ class YOLOv1(torch.nn.Module):
 
     
 if __name__ == "__main__":
-    device = 'mps'
+    device = device
     model = YOLOv1(split_size = 7, num_boxes = 2, num_classes = 10).to(device)
     # Store the architecture in a text file
     with open('darknet_architecture.txt', 'w') as f:
