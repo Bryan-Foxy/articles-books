@@ -1,6 +1,6 @@
 import torch
-from config import device
-from architecture import architecture_config
+from articles.yolo.config import device
+from articles.yolo.architecture import architecture_config
 
 class ConvolutionBlock(torch.nn.Module):
     def __init__(self, in_channels, out_channels, **kwargs):
