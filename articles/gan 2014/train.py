@@ -9,7 +9,7 @@ from tqdm.auto import tqdm
 from torch.utils.tensorboard import SummaryWriter
 
 # Params
-device = "cuda" if torch.cuda.is_available() else "cpu"
+device = "mps" if torch.cuda.is_available() else "cpu"
 lr = 3e-4
 bs = 32
 latent_size = 128
@@ -17,7 +17,7 @@ hidden_size_gen = 256
 hidden_size_disc = 128
 img_size = 28 * 28 * 1 # We are using the dataset MNIST
 criterion = torch.nn.BCELoss()
-num_epochs = 200
+num_epochs = 100
 f_noise = torch.randn((bs,latent_size)).to(device)
 step = 0
 writer_tensorboard = SummaryWriter(f"runs/real")
