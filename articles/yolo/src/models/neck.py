@@ -11,7 +11,7 @@ class ConvBlock(torch.nn.Module):
 			stride = stride, 
 			padding = padding)
 		self.bn = torch.nn.BatchNorm2d(out_channels)
-		self.act = torch.nn.LeakyReLU(0.2)
+		self.act = torch.nn.Mish()
 
 	def forward(self, x):
 		return self.act(self.bn(self.conv(x)))
@@ -19,16 +19,17 @@ class ConvBlock(torch.nn.Module):
 class PANet(torch.nn.Module):
 	def __init__(self, in_channels_list):
 		super(PANet, self).__init__()
-		self.top_down_conv1 = ConvBlock(in_channels_list[2], in_channels_list[1])
-		self.top_down_conv2 = ConvBlock(in_channels_list[1], in_channels_list[0])
-		self.bottom_up_conv1 = ConvBlock(in_channels_list[0], in_channels_list[1])
-		self.bottom_up_conv2 = ConvBlock(in_channels_list[1], in_channels_list[2])
-		self.final_conv1 = ConvBlock(in_channels_list[0], in_channels_list[0])
-		self.final_conv2 = ConvBlock(in_channels_list[1], in_channels_list[1])
-		self.final_conv3 = ConvBlock(in_channels_list[2], in_channels_list[2])
+		self.top_down_conv1 = ConvBlock(in_channels_list[2], in_channels_list[1], kernel_size=1, stride=1, padding=0)
+		self.top_down_conv2 = ConvBlock(in_channels_list[1], in_channels_list[0], kernel_size=1, stride=1, padding=0)
+		self.bottom_up_conv1 = ConvBlock(in_channels_list[0], in_channels_list[1], kernel_size=1, stride=1, padding=0)
+		self.bottom_up_conv2 = ConvBlock(in_channels_list[1], in_channels_list[2], kernel_size=1, stride=1, padding=0)
+		self.final_conv1 = ConvBlock(in_channels_list[0], in_channels_list[0], kernel_size=1, stride=1, padding=0)
+		self.final_conv2 = ConvBlock(in_channels_list[1], in_channels_list[1], kernel_size=1, stride=1, padding=0)
+		self.final_conv3 = ConvBlock(in_channels_list[2], in_channels_list[2], kernel_size=1, stride=1, padding=0)
 
 	def forward(self, features):
 		P3, P4, P5 = features
+
 		P4_td = self.top_down_conv1(P5)
 		P4_td = torch.nn.functional.interpolate(P4_td, scale_factor = 2, mode = "nearest") + P4
 		P3_td = self.top_down_conv2(P4_td)

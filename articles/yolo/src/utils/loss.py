@@ -28,31 +28,43 @@ class Loss(torch.nn.Module):
     def forward(self, predictions, targets):
         total_loss = 0.0
 
-        for scale_idx, (pred, target) in enumerate(zip(predictions, targets)):
-            pred_boxes = pred[..., :4]  # (x, y, w, h)
-            pred_objectness = pred[..., 4]  # Objectness score
-            pred_classes = pred[..., 5:]  # Class probabilities
+        for scale_idx, pred in enumerate(predictions):
+            batch_loss = 0.0
+            for batch_idx, batch_pred in enumerate(pred):
+                # Get targets for this specific image
+                target_boxes = targets[batch_idx]['boxes']
+                target_labels = targets[batch_idx]['labels']
 
-            
-            target_boxes = target["boxes"] 
-            target_objectness = target["objectness"]  
-            target_classes = target["class_ids"] 
+                # If no objects in this image, skip
+                if len(target_boxes) == 0:
+                    continue
 
-            obj_mask = target_objectness > 0
-            box_loss = self.lambda_coord * self.mse_loss(
-                pred_boxes[obj_mask], target_boxes[obj_mask]
-            )
+                # Ensure predictions are in the right shape
+                batch_pred = batch_pred.reshape(-1, self.num_classes + 5)
 
-            object_loss = self.bce_loss(pred_objectness[obj_mask], target_objectness[obj_mask])
-            no_object_loss = self.lambda_noobj * self.bce_loss(
-                pred_objectness[~obj_mask], target_objectness[~obj_mask]
-            )
+                # Compute losses
+                box_loss = self.lambda_coord * self.mse_loss(
+                    batch_pred[:len(target_boxes), :4], 
+                    target_boxes
+                )
 
-            class_loss = self.ce_loss(
-                pred_classes[obj_mask], target_classes[obj_mask]
-            )
+                # Objectness loss (placeholder - you might need more sophisticated handling)
+                objectness_target = torch.ones(len(target_boxes), device=batch_pred.device)
+                object_loss = self.bce_loss(
+                    batch_pred[:len(target_boxes), 4], 
+                    objectness_target
+                )
 
-            scale_loss = box_loss + object_loss + no_object_loss + class_loss
-            total_loss += scale_loss
+                # Classification loss
+                class_loss = self.ce_loss(
+                    batch_pred[:len(target_boxes), 5:], 
+                    target_labels
+                )
+
+                batch_loss += box_loss + object_loss + class_loss
+
+            # Average loss over the batch
+            if batch_loss > 0:
+                total_loss += batch_loss / len(predictions[scale_idx])
 
         return total_loss
