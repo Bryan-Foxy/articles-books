@@ -33,9 +33,8 @@ def train(args):
     print(f"Number of classes: {nc}")
 
     yolo = YOLO(num_classes=nc, num_anchors=args.num_anchors).to(device)
-    optimizer = torch.optim.SGD(yolo.parameters(), lr=args.lr)
+    optimizer = torch.optim.Adam(yolo.parameters(), lr=args.lr)
     criterion = Loss(num_classes=nc).to(device)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
 
     train_losses = []
 
@@ -59,15 +58,13 @@ def train(args):
 
             loop.set_postfix(loss=loss.item())
 
-        scheduler.step()
-
         avg_loss = epoch_loss / len(train_loader)
         train_losses.append(avg_loss)
         print(f"Epoch {epoch+1} Loss: {avg_loss:.4f}")
 
-    torch.save(yolo.state_dict(), args.save_path)
+        torch.save(yolo.state_dict(), args.save_path)
+    
     print(f"Model saved to {args.save_path}")
-
     plot_losses(train_losses)
 
 
